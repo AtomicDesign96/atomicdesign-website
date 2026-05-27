@@ -31,24 +31,138 @@
 
 <!-- === NAV === -->
 <header class="nav" data-screen-label="Nav">
-  <a class="nav-logo" href="#">
+  <a class="nav-logo" href="/">
     <span class="logo-mark" aria-hidden="true">
       <img src="assets/atomic-round-small.png" alt="" class="logo-img"/>
     </span>
     <span>Atomic Design</span>
   </a>
-  <nav class="nav-links">
-    <a href="#services">Services</a>
-    <a href="#process">Process</a>
-    <a href="#work">Work</a>
-    <a href="#markets">Markets</a>
-    <a href="#about">About</a>
+
+  <nav class="nav-links" aria-label="Primary">
+    <div class="nav-item nav-item-drop" data-dropdown>
+      <button type="button" class="nav-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="menu-services">
+        Services
+        <svg class="nav-caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 4l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-menu" id="menu-services" role="menu">
+        <div class="nav-menu-inner">
+          <a href="/services/seo/" role="menuitem">
+            <span class="nm-title">SEO Services</span>
+            <span class="nm-sub">Organic search, technical, content</span>
+          </a>
+          <a href="/services/local-seo/" role="menuitem">
+            <span class="nm-title">Local SEO</span>
+            <span class="nm-sub">Multi-market local pack visibility</span>
+          </a>
+          <a href="/services/ai-seo/" role="menuitem">
+            <span class="nm-title">AI SEO</span>
+            <span class="nm-sub">Built for the new search behavior</span>
+          </a>
+          <a href="/services/geo/" role="menuitem">
+            <span class="nm-title">Generative Engine Optimization</span>
+            <span class="nm-sub">ChatGPT, Perplexity, Gemini, AIO</span>
+          </a>
+          <a href="/services/web-design/" role="menuitem">
+            <span class="nm-title">Web Design</span>
+            <span class="nm-sub">Brand systems that convert</span>
+          </a>
+          <a href="/services/ai-websites/" role="menuitem">
+            <span class="nm-title">AI Websites</span>
+            <span class="nm-sub">Sites that learn from every visit</span>
+          </a>
+          <a href="/services/ai-automation/" role="menuitem">
+            <span class="nm-title">AI Automation</span>
+            <span class="nm-sub">Agents, workflows, ops</span>
+          </a>
+          <a href="/services/wordpress/" role="menuitem">
+            <span class="nm-title">WordPress Development</span>
+            <span class="nm-sub">Headless, custom, performant</span>
+          </a>
+          <a href="/services/" role="menuitem" class="nav-menu-all">
+            All Services <span class="arr">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <a href="/industries/">Industries</a>
+    </div>
+
+    <div class="nav-item">
+      <a href="/work/">Work</a>
+    </div>
+
+    <div class="nav-item nav-item-drop" data-dropdown>
+      <button type="button" class="nav-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="menu-about">
+        About
+        <svg class="nav-caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 4l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-menu nav-menu-sm" id="menu-about" role="menu">
+        <div class="nav-menu-inner">
+          <a href="/about/" role="menuitem">
+            <span class="nm-title">About Atomic Design</span>
+            <span class="nm-sub">Thirty years. One agency.</span>
+          </a>
+          <a href="/methodology/" role="menuitem">
+            <span class="nm-title">The Chain Reaction Framework</span>
+            <span class="nm-sub">Attract. Impress. Convert. Compound.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <a href="/blog/">Blog</a>
+    </div>
   </nav>
+
   <div class="nav-cta">
-    <a href="#" class="btn btn-ghost">Sign in</a>
-    <a href="#cta" class="btn btn-primary">Start a project →</a>
+    <a href="/contact/" class="btn btn-primary">Start a project →</a>
+    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<!-- === MOBILE MENU === -->
+<div class="mobile-menu" id="mobile-menu" hidden>
+  <div class="mobile-menu-inner">
+    <div class="m-section">
+      <button class="m-trigger" type="button" aria-expanded="false">
+        Services
+        <svg class="m-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="m-panel">
+        <a href="/services/seo/">SEO Services</a>
+        <a href="/services/local-seo/">Local SEO</a>
+        <a href="/services/ai-seo/">AI SEO</a>
+        <a href="/services/geo/">Generative Engine Optimization</a>
+        <a href="/services/web-design/">Web Design</a>
+        <a href="/services/ai-websites/">AI Websites</a>
+        <a href="/services/ai-automation/">AI Automation</a>
+        <a href="/services/wordpress/">WordPress Development</a>
+        <a href="/services/" class="m-all">All Services →</a>
+      </div>
+    </div>
+    <div class="m-section"><a class="m-link" href="/industries/">Industries</a></div>
+    <div class="m-section"><a class="m-link" href="/work/">Work</a></div>
+    <div class="m-section">
+      <button class="m-trigger" type="button" aria-expanded="false">
+        About
+        <svg class="m-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="m-panel">
+        <a href="/about/">About Atomic Design</a>
+        <a href="/methodology/">The Chain Reaction Framework</a>
+      </div>
+    </div>
+    <div class="m-section"><a class="m-link" href="/blog/">Blog</a></div>
+    <div class="m-section m-section-cta">
+      <a href="/contact/" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">Start a project →</a>
+    </div>
+  </div>
+</div>
 
 <!-- === HERO === -->
 <section class="hero" data-screen-label="01 Hero">
@@ -619,49 +733,97 @@
 
 <!-- === FOOTER === -->
 <footer data-screen-label="08 Footer">
-  <div class="foot-grid">
-    <div class="foot-brand">
-      <a class="nav-logo" href="#">
+  <div class="foot-row foot-row-1">
+    <div class="foot-col foot-col-brand">
+      <a class="nav-logo" href="/">
         <span class="logo-mark" aria-hidden="true">
           <img src="assets/atomic-round-small.png" alt="" class="logo-img"/>
         </span>
         <span>Atomic Design</span>
       </a>
-      <p>An AI-native agency for brands that want to compound. Building since 1996, rebuilt for 2026.</p>
+      <p class="foot-tagline">An AI-native agency for brands that want to compound. Building since 1996, rebuilt for 2026.</p>
+      <h5>Locations</h5>
+      <nav aria-label="Locations">
+        <ul>
+          <li><a href="/locations/rochester-ny/">Rochester, NY</a></li>
+          <li><a href="/locations/nashville-tn/">Nashville, TN</a></li>
+          <li><a href="/locations/atlanta-ga/">Atlanta, GA</a></li>
+          <li><a href="/locations/" class="foot-all">View All Locations →</a></li>
+        </ul>
+      </nav>
     </div>
-    <div class="foot-col">
+
+    <div class="foot-col foot-col-accordion">
       <h5>Services</h5>
-      <ul>
-        <li><a href="#">Web Design &amp; Development</a></li>
-        <li><a href="#">GEO — Generative Engine Optimization</a></li>
-        <li><a href="#">SEO &amp; Local SEO</a></li>
-        <li><a href="#">AI Agents &amp; Automation</a></li>
-        <li><a href="#">Brand &amp; Content Strategy</a></li>
-        <li><a href="#">Ongoing Optimization &amp; Growth</a></li>
-      </ul>
+      <nav aria-label="Services">
+        <ul>
+          <li><a href="/services/seo/">SEO Services</a></li>
+          <li><a href="/services/local-seo/">Local SEO</a></li>
+          <li><a href="/services/ai-seo/">AI SEO</a></li>
+          <li><a href="/services/geo/">Generative Engine Optimization</a></li>
+          <li><a href="/services/web-design/">Web Design</a></li>
+          <li><a href="/services/ai-websites/">AI Websites</a></li>
+          <li><a href="/services/wordpress/">WordPress Development</a></li>
+          <li><a href="/services/ai-automation/">AI Automation</a></li>
+          <li><a href="/services/digital-marketing/">Digital Marketing</a></li>
+          <li><a href="/services/ppc/">PPC / Google Ads</a></li>
+          <li><a href="/services/ai-agents/">AI Agents</a></li>
+          <li><a href="/services/" class="foot-all">View All Services →</a></li>
+        </ul>
+      </nav>
     </div>
-    <div class="foot-col">
-      <h5>Markets</h5>
-      <ul>
-        <li><a href="#">Rochester, NY</a></li>
-        <li><a href="#">Nashville, TN</a></li>
-        <li><a href="#">Atlanta, GA</a></li>
-        <li><a href="#">Careers</a></li>
-      </ul>
-    </div>
-    <div class="foot-col">
-      <h5>Connect</h5>
-      <ul>
-        <li><a href="#">hello@atomicdesign.net</a></li>
-        <li><a href="#">LinkedIn</a></li>
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">Dribbble</a></li>
-      </ul>
+
+    <div class="foot-col foot-col-accordion">
+      <h5>Industries</h5>
+      <nav aria-label="Industries">
+        <ul>
+          <li><a href="/industries/manufacturing/">Manufacturing</a></li>
+          <li><a href="/industries/healthcare/">Healthcare</a></li>
+          <li><a href="/industries/legal/">Legal</a></li>
+          <li><a href="/industries/saas/">SaaS</a></li>
+          <li><a href="/industries/b2b/">B2B</a></li>
+          <li><a href="/industries/ecommerce/">E-commerce</a></li>
+          <li><a href="/industries/home-services/">Home Services</a></li>
+          <li><a href="/industries/professional-services/">Professional Services</a></li>
+          <li><a href="/industries/" class="foot-all">View All Industries →</a></li>
+        </ul>
+      </nav>
     </div>
   </div>
+
+  <div class="foot-row foot-row-2">
+    <address class="foot-office">
+      <div class="foot-office-name">Rochester, NY</div>
+      <a href="tel:+15852718661" class="foot-phone">(585) 271-8661</a>
+      <a class="foot-addr" href="https://www.google.com/maps/search/?api=1&amp;query=26+S+Goodman+St+Rochester+NY+14607" target="_blank" rel="noopener">
+        26 S Goodman St #4<br/>Rochester, NY 14607
+      </a>
+    </address>
+    <address class="foot-office">
+      <div class="foot-office-name">Nashville, TN</div>
+      <a href="tel:+16159887022" class="foot-phone">(615) 988-7022</a>
+      <a class="foot-addr" href="https://www.google.com/maps/search/?api=1&amp;query=9220+Stepping+Stone+Dr+Franklin+TN+37067" target="_blank" rel="noopener">
+        9220 Stepping Stone Dr<br/>Franklin, TN 37067
+      </a>
+    </address>
+    <address class="foot-office">
+      <div class="foot-office-name">Atlanta, GA</div>
+      <a href="tel:+16159887022" class="foot-phone">(615) 988-7022</a>
+      <a class="foot-addr" href="https://www.google.com/maps/search/?api=1&amp;query=232+Roswell+Rd+NW+Atlanta+GA+30305" target="_blank" rel="noopener">
+        232 Roswell Rd NW Unit B<br/>Atlanta, GA 30305
+      </a>
+    </address>
+  </div>
+
   <div class="foot-bottom">
-    <span>© 1996–2026 ATOMIC DESIGN, LLC · ALL RIGHTS RESERVED</span>
-    <span>BUILT WITH ATTENTION · ROCHESTER · NASHVILLE · ATLANTA</span>
+    <span>© 1996–2026 Atomic Design</span>
+    <nav class="foot-legal" aria-label="Legal">
+      <a href="/privacy-policy/">Privacy Policy</a>
+      <a href="/terms-of-service/">Terms of Service</a>
+      <a href="/cookie-policy/">Cookie Policy</a>
+      <a href="/accessibility/">Accessibility Statement</a>
+      <a href="/sitemap/">Sitemap</a>
+    </nav>
   </div>
 </footer>
 
@@ -684,6 +846,146 @@
 })();
 
 // Logo style toggle — removed (glow locked in)
+
+// === Nav dropdowns + mobile menu ===
+(function() {
+  const dropdowns = document.querySelectorAll('.nav-item-drop');
+  const burger = document.querySelector('.nav-burger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  function closeAllDropdowns(except) {
+    dropdowns.forEach(d => {
+      if (d === except) return;
+      d.dataset.open = 'false';
+      const trig = d.querySelector('.nav-trigger');
+      if (trig) trig.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  dropdowns.forEach(drop => {
+    const trigger = drop.querySelector('.nav-trigger');
+    if (!trigger) return;
+    drop.dataset.open = 'false';
+
+    // Hover (desktop)
+    let hoverTimer;
+    drop.addEventListener('mouseenter', () => {
+      if (window.innerWidth <= 980) return;
+      clearTimeout(hoverTimer);
+      closeAllDropdowns(drop);
+      drop.dataset.open = 'true';
+      trigger.setAttribute('aria-expanded', 'true');
+    });
+    drop.addEventListener('mouseleave', () => {
+      if (window.innerWidth <= 980) return;
+      hoverTimer = setTimeout(() => {
+        drop.dataset.open = 'false';
+        trigger.setAttribute('aria-expanded', 'false');
+      }, 140);
+    });
+
+    // Click (touch / explicit)
+    trigger.addEventListener('click', e => {
+      e.preventDefault();
+      const isOpen = drop.dataset.open === 'true';
+      closeAllDropdowns();
+      drop.dataset.open = isOpen ? 'false' : 'true';
+      trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    });
+
+    // Keyboard
+    trigger.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        drop.dataset.open = 'true';
+        trigger.setAttribute('aria-expanded', 'true');
+        const firstLink = drop.querySelector('.nav-menu a');
+        if (firstLink) firstLink.focus();
+      }
+    });
+
+    drop.querySelectorAll('.nav-menu a').forEach((a, i, list) => {
+      a.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          (list[i + 1] || list[0]).focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          (list[i - 1] || list[list.length - 1]).focus();
+        } else if (e.key === 'Escape') {
+          drop.dataset.open = 'false';
+          trigger.setAttribute('aria-expanded', 'false');
+          trigger.focus();
+        }
+      });
+    });
+  });
+
+  // Outside click
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.nav-item-drop')) closeAllDropdowns();
+  });
+
+  // Escape global
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeAllDropdowns();
+      if (mobileMenu && mobileMenu.dataset.open === 'true') closeMobile();
+    }
+  });
+
+  // Mobile menu
+  function openMobile() {
+    if (!mobileMenu) return;
+    mobileMenu.hidden = false;
+    requestAnimationFrame(() => mobileMenu.dataset.open = 'true');
+    burger.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-label', 'Close menu');
+    document.body.dataset.menuOpen = 'true';
+  }
+  function closeMobile() {
+    if (!mobileMenu) return;
+    mobileMenu.dataset.open = 'false';
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-label', 'Open menu');
+    document.body.dataset.menuOpen = 'false';
+    setTimeout(() => { mobileMenu.hidden = true; }, 350);
+  }
+  if (burger) {
+    burger.addEventListener('click', () => {
+      const open = burger.getAttribute('aria-expanded') === 'true';
+      open ? closeMobile() : openMobile();
+    });
+  }
+
+  // Mobile accordion triggers
+  document.querySelectorAll('.m-trigger').forEach(trig => {
+    trig.addEventListener('click', () => {
+      const open = trig.getAttribute('aria-expanded') === 'true';
+      trig.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+  });
+
+  // Close mobile menu on link click
+  document.querySelectorAll('#mobile-menu a').forEach(a => {
+    a.addEventListener('click', closeMobile);
+  });
+
+  // Reset on resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 980 && mobileMenu && mobileMenu.dataset.open === 'true') {
+      closeMobile();
+    }
+  });
+  // Footer accordion (≤480px)
+  document.querySelectorAll('.foot-col-accordion h5').forEach(h => {
+    h.addEventListener('click', () => {
+      if (window.innerWidth > 480) return;
+      const col = h.parentElement;
+      col.dataset.open = col.dataset.open === 'true' ? 'false' : 'true';
+    });
+  });
+})();
 </script>
 <script src="app-v2.js"></script>
 </body>
