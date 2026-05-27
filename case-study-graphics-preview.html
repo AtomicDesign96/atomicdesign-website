@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Case Study Graphics — Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #050309;
+    --surface: #11091a;
+    --line: rgba(255,255,255,0.08);
+    --line-2: rgba(255,255,255,0.16);
+    --text: #f5f5f5;
+    --text-2: #b8b0c2;
+    --text-3: #6e6679;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: "Geist", sans-serif; min-height: 100vh; }
+  body::before {
+    content: ""; position: fixed; inset: -10%;
+    background:
+      radial-gradient(40% 35% at 18% 12%, rgba(255, 107, 26, 0.16), transparent 60%),
+      radial-gradient(35% 30% at 82% 8%, rgba(255, 61, 165, 0.12), transparent 60%),
+      radial-gradient(45% 40% at 50% 80%, rgba(138, 61, 240, 0.14), transparent 65%);
+    filter: blur(20px); z-index: -1; pointer-events: none;
+  }
+  .page { max-width: 1280px; margin: 0 auto; padding: 80px 32px; }
+  h1 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .sub { color: var(--text-2); font-size: 16px; margin-bottom: 48px; max-width: 640px; line-height: 1.5; }
+  .tag {
+    display: inline-block; font-family: "Geist Mono", monospace; font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: #ff8a3d;
+    padding: 6px 14px; border: 1px solid rgba(255,107,26,0.3); border-radius: 999px;
+    margin-bottom: 18px;
+  }
+
+  .work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  .work-card {
+    position: relative;
+    background: var(--surface);
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 380px;
+    display: flex; flex-direction: column;
+    isolation: isolate;
+  }
+  .work-card::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .visual {
+    position: relative; flex: 1; min-height: 260px; padding: 28px;
+    display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
+    overflow: hidden;
+    background: #0c0613;
+  }
+  .visual::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 50% 100%, var(--accent-1), transparent 60%),
+      radial-gradient(circle at 50% 0%, var(--accent-2), transparent 70%),
+      linear-gradient(180deg, #14091e 0%, #0a0410 100%);
+    z-index: 0;
+  }
+  .visual > * { position: relative; z-index: 3; }
+
+  /* Base reference image */
+  .visual .ref {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 1;
+    animation: refDrift 14s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  /* Overlay SVG for animated glow dots */
+  .visual svg.overlay {
+    position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2;
+    mix-blend-mode: screen; pointer-events: none;
+  }
+  /* Vignette + soft glow on top of ref */
+  .visual::after {
+    content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background:
+      radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(8,3,16,0.55) 100%);
+  }
+  /* scan shimmer */
+  .visual .shimmer {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, rgba(255,200,160,0.05) 50%, transparent 100%);
+    animation: shimmer 6s ease-in-out infinite;
+    mix-blend-mode: screen;
+  }
+  @keyframes refDrift {
+    0%   { transform: scale(1.04) translate(0, 0); }
+    100% { transform: scale(1.06) translate(-1%, -1%); }
+  }
+  @keyframes shimmer {
+    0%, 100% { transform: translateY(-40%); opacity: 0; }
+    50%      { transform: translateY(40%); opacity: 1; }
+  }
+  .visual .shimmer {
+    background: linear-gradient(180deg, transparent 0%, rgba(255,200,160,0.10) 50%, transparent 100%) !important;
+  }
+
+  .work-card[data-accent="orange"]  { --accent-1: rgba(255, 138, 61, 0.20); --accent-2: rgba(255, 61, 165, 0.06); }
+  .work-card[data-accent="magenta"] { --accent-1: rgba(180, 61, 240, 0.22); --accent-2: rgba(255, 61, 165, 0.05); }
+  .work-card[data-accent="magenta"] .ref { filter: brightness(2.2) saturate(1.3) contrast(1.15); mix-blend-mode: lighten; }
+  .work-card[data-accent="red"]     { --accent-1: rgba(255, 61, 100, 0.18); --accent-2: rgba(255, 107, 26, 0.06); }
+
+  .body { padding: 28px 28px 30px; display: flex; flex-direction: column; gap: 14px; background: var(--surface); }
+  .meta {
+    display: flex; align-items: center; gap: 12px;
+    font-family: "Geist Mono", monospace; font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .meta .num {
+    color: rgba(255,255,255,0.85);
+    padding: 4px 8px;
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+  .meta .tag { color: var(--text-2); }
+  .body h3 { font-size: 26px; font-weight: 500; letter-spacing: -0.025em; line-height: 1.1; }
+  .body p { color: var(--text-2); font-size: 13px; line-height: 1.55; }
+  .body .link {
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-family: "Geist Mono", monospace; font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2);
+    display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .body .link .arr { color: #ff8a3d; font-size: 14px; }
+
+  /* ===== Shared animation primitives ===== */
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 1; }
+  }
+  @keyframes twinkleSoft {
+    0%, 100% { opacity: 0.35; }
+    50%      { opacity: 0.85; }
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 1; }
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-2px); }
+  }
+  @keyframes flowDash {
+    to { stroke-dashoffset: -40; }
+  }
+  @keyframes flowDashLong {
+    to { stroke-dashoffset: -120; }
+  }
+
+  /* ===== Light TN — house with bulbs ===== */
+  .v-house .bulb {
+    animation: twinkle 2.6s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+  }
+  .v-house .bulb-glow {
+    animation: twinkle 2.6s ease-in-out infinite;
+  }
+  .v-house .bulb-big {
+    animation: twinkle 3.4s ease-in-out infinite;
+  }
+  .v-house .house-line {
+    stroke-dasharray: 4 4;
+    animation: flowDash 8s linear infinite;
+  }
+  .v-house .path-line {
+    stroke-dasharray: 2 6;
+    animation: flowDashLong 6s linear infinite reverse;
+  }
+
+  /* ===== CPL — electrical panel ===== */
+  .v-panel .terminal {
+    animation: twinkleSoft 2.8s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+  }
+  .v-panel .label-plate {
+    animation: breathe 3s ease-in-out infinite;
+  }
+  .v-panel .conduit {
+    stroke-dasharray: 3 6;
+    animation: flowDash 5s linear infinite;
+  }
+  .v-panel .screw {
+    animation: twinkleSoft 3.6s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+  }
+
+  /* ===== TSM — isometric booths ===== */
+  .v-tsm .booth-glow {
+    animation: breathe 3.4s ease-in-out infinite;
+  }
+  .v-tsm .floor-line {
+    stroke-dasharray: 2 5;
+    animation: flowDash 6s linear infinite;
+  }
+  .v-tsm .person-dot {
+    animation: twinkle 2.4s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+  }
+  .v-tsm .booth-light {
+    animation: twinkle 3s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+  }
+
+  /* ===== Overlay glow animations (used on top of ref images) ===== */
+  .overlay .glow {
+    animation: glowPulse 2.0s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+    will-change: opacity, transform;
+  }
+  .overlay .firefly {
+    animation: fireflyTwinkle 1.6s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+  }
+  .overlay .plate-pulse {
+    animation: platePulse 2.6s ease-in-out infinite;
+    transform-origin: center; transform-box: fill-box;
+  }
+  .overlay .ping {
+    animation: ping 2.6s ease-out infinite;
+    transform-origin: center; transform-box: fill-box;
+    opacity: 0;
+    fill: none;
+    stroke-width: 2;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.25; transform: scale(0.7); }
+    50%      { opacity: 1;    transform: scale(1.6); }
+  }
+  @keyframes fireflyTwinkle {
+    0%, 100% { opacity: 0.15; transform: scale(0.4); }
+    50%      { opacity: 1;    transform: scale(1.7); }
+  }
+  @keyframes platePulse {
+    0%, 100% { opacity: 0.25; transform: scale(0.94); }
+    50%      { opacity: 0.7;  transform: scale(1.08); }
+  }
+  @keyframes ping {
+    0%   { opacity: 0.9; transform: scale(0.3); }
+    80%  { opacity: 0;   transform: scale(2.6); }
+    100% { opacity: 0;   transform: scale(2.6); }
+  }
+
+  /* per-element delay helpers */
+  .d0  { animation-delay: 0.00s !important; }
+  .d1  { animation-delay: 0.18s !important; }
+  .d2  { animation-delay: 0.36s !important; }
+  .d3  { animation-delay: 0.54s !important; }
+  .d4  { animation-delay: 0.72s !important; }
+  .d5  { animation-delay: 0.90s !important; }
+  .d6  { animation-delay: 1.08s !important; }
+  .d7  { animation-delay: 1.26s !important; }
+  .d8  { animation-delay: 1.44s !important; }
+  .d9  { animation-delay: 1.62s !important; }
+  .d10 { animation-delay: 1.80s !important; }
+  .d11 { animation-delay: 1.98s !important; }
+  .d12 { animation-delay: 2.16s !important; }
+</style>
+</head>
+<body>
+<div class="page">
+  <span class="tag">Preview · Case study graphics</span>
+  <h1>Three scenes, one visual language.</h1>
+  <p class="sub">Each illustration abstracts the business it represents — a glowing residence, a wired-up panel, a humming expo floor — drawn in the same neon-linework vocabulary with twinkle and flow animations across all three.</p>
+
+  <div class="work-grid">
+
+    <!-- ============================================================
+         CARD 1 — TSM (Trade show booths, isometric)
+         ============================================================ -->
+    <div class="work-card" data-accent="red">
+      <div class="visual">
+        <img class="ref" src="assets/case-booths.png" alt="" />
+        <div class="shimmer"></div>
+        <svg class="overlay" viewBox="0 0 1470 872" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="tsm-orb">
+              <stop offset="0%" stop-color="#ffe4c0" stop-opacity="1"/>
+              <stop offset="40%" stop-color="#ff7a4a" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#ff3d6e" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="tsm-orb-pink">
+              <stop offset="0%" stop-color="#ffd0f0" stop-opacity="1"/>
+              <stop offset="40%" stop-color="#ff5fa0" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#b8388a" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Booth interior lights (BRAND EXPERIENCE stage spots) -->
+          <g class="glow-group">
+            <circle class="glow d0" cx="570" cy="275" r="38" fill="url(#tsm-orb)"/>
+            <circle class="glow d2" cx="700" cy="285" r="42" fill="url(#tsm-orb)"/>
+            <circle class="glow d4" cx="785" cy="300" r="38" fill="url(#tsm-orb)"/>
+            <!-- ping rings for emphasis -->
+            <circle class="ping d0" cx="700" cy="285" r="32" stroke="#ffd0a0"/>
+            <circle class="ping d3" cx="570" cy="275" r="30" stroke="#ff7a4a"/>
+          </g>
+          <!-- People feet glows -->
+          <g class="glow-group">
+            <circle class="glow d1" cx="265" cy="325" r="22" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d3" cx="335" cy="345" r="24" fill="url(#tsm-orb)"/>
+            <circle class="glow d5" cx="600" cy="495" r="28" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d2" cx="790" cy="445" r="26" fill="url(#tsm-orb)"/>
+            <circle class="glow d4" cx="875" cy="435" r="30" fill="url(#tsm-orb)"/>
+            <circle class="glow d6" cx="1115" cy="360" r="22" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d0" cx="685" cy="610" r="24" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d7" cx="785" cy="720" r="28" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d3" cx="880" cy="650" r="26" fill="url(#tsm-orb)"/>
+            <circle class="glow d5" cx="970" cy="545" r="24" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d8" cx="260" cy="650" r="22" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d2" cx="545" cy="690" r="24" fill="url(#tsm-orb-pink)"/>
+            <circle class="glow d6" cx="1300" cy="435" r="22" fill="url(#tsm-orb-pink)"/>
+          </g>
+          <!-- Floor circuit fireflies -->
+          <g class="glow-group">
+            <circle class="firefly d0" cx="190" cy="485" r="5" fill="#ffd0a0"/>
+            <circle class="firefly d2" cx="445" cy="560" r="5" fill="#ff8a5a"/>
+            <circle class="firefly d4" cx="940" cy="450" r="5" fill="#ffd0a0"/>
+            <circle class="firefly d6" cx="1145" cy="545" r="5" fill="#ff5fa0"/>
+            <circle class="firefly d3" cx="720" cy="395" r="5" fill="#ffd0a0"/>
+            <circle class="firefly d5" cx="1280" cy="650" r="5" fill="#ff8a5a"/>
+            <circle class="firefly d1" cx="110" cy="760" r="5" fill="#ff5fa0"/>
+            <circle class="firefly d7" cx="560" cy="790" r="5" fill="#ffd0a0"/>
+          </g>
+          <!-- placeholder for original old scene removed below -->
+        </svg>
+        <svg class="scene v-tsm" viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="display:none">
+          <defs>
+            <linearGradient id="tsm-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"  stop-color="#ff6b3a"/>
+              <stop offset="55%" stop-color="#ff3d6e"/>
+              <stop offset="100%" stop-color="#b8388a"/>
+            </linearGradient>
+            <linearGradient id="tsm-grad-dim" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"  stop-color="#ff6b3a" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#b8388a" stop-opacity="0.55"/>
+            </linearGradient>
+            <filter id="tsm-glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="1.6" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="tsm-glow-strong" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="3.5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <radialGradient id="tsm-dot">
+              <stop offset="0%" stop-color="#ffd0a0"/>
+              <stop offset="60%" stop-color="#ff6b3a"/>
+              <stop offset="100%" stop-color="#ff3d6e" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- iso floor grid (dots) -->
+          <g fill="rgba(255, 100, 120, 0.25)">
+            <!-- diagonal grid of small dots — iso axes -->
+            <g>
+              <circle cx="40"  cy="220" r="0.8"/><circle cx="80"  cy="200" r="0.8"/>
+              <circle cx="120" cy="180" r="0.8"/><circle cx="160" cy="160" r="0.8"/>
+              <circle cx="200" cy="140" r="0.8"/><circle cx="240" cy="120" r="0.8"/>
+              <circle cx="280" cy="100" r="0.8"/><circle cx="320" cy="80"  r="0.8"/>
+              <circle cx="360" cy="60"  r="0.8"/>
+              <circle cx="80"  cy="240" r="0.8"/><circle cx="120" cy="220" r="0.8"/>
+              <circle cx="160" cy="200" r="0.8"/><circle cx="200" cy="180" r="0.8"/>
+              <circle cx="240" cy="160" r="0.8"/><circle cx="280" cy="140" r="0.8"/>
+              <circle cx="320" cy="120" r="0.8"/><circle cx="360" cy="100" r="0.8"/>
+              <circle cx="40"  cy="180" r="0.8"/><circle cx="80"  cy="160" r="0.8"/>
+              <circle cx="120" cy="140" r="0.8"/><circle cx="160" cy="120" r="0.8"/>
+              <circle cx="200" cy="100" r="0.8"/><circle cx="240" cy="80"  r="0.8"/>
+              <circle cx="280" cy="60"  r="0.8"/><circle cx="320" cy="40"  r="0.8"/>
+            </g>
+          </g>
+
+          <!-- faint floor grid lines (iso) -->
+          <g stroke="url(#tsm-grad-dim)" stroke-width="0.4" fill="none" opacity="0.35">
+            <path class="floor-line" d="M 0 240 L 200 140"/>
+            <path class="floor-line" d="M 60 270 L 280 160"/>
+            <path class="floor-line" d="M 120 280 L 360 160"/>
+            <path class="floor-line" d="M 0 180 L 240 60"/>
+            <path class="floor-line" d="M 80 220 L 400 60"/>
+            <path class="floor-line" d="M 160 260 L 400 140"/>
+          </g>
+
+          <!-- ===== Booth: BACK-LEFT (small) ===== -->
+          <g stroke="url(#tsm-grad)" stroke-width="1" fill="none" filter="url(#tsm-glow)" opacity="0.95">
+            <!-- front face -->
+            <path d="M 30 120 L 30 70 L 80 60 L 80 110 Z"/>
+            <!-- top face -->
+            <path d="M 30 70 L 80 60 L 110 50 L 60 60 Z" opacity="0.7"/>
+            <!-- side face -->
+            <path d="M 80 60 L 110 50 L 110 100 L 80 110 Z" opacity="0.85"/>
+            <!-- bottom edge -->
+            <path d="M 30 120 L 80 110 L 110 100" opacity="0.5"/>
+            <!-- header bar -->
+            <path d="M 30 80 L 80 70 L 110 60" opacity="0.6"/>
+            <!-- inner display rect -->
+            <path d="M 40 102 L 40 88 L 70 82 L 70 96 Z" opacity="0.7"/>
+            <text x="38" y="78" font-family="Geist Mono, monospace" font-size="6" fill="#ff8a5a" letter-spacing="0.5" opacity="0.95">TECH EXPO</text>
+          </g>
+
+          <!-- ===== Booth: BACK-CENTER (largest — BRAND EXPERIENCE) ===== -->
+          <g stroke="url(#tsm-grad)" stroke-width="1.1" fill="none" filter="url(#tsm-glow)">
+            <!-- front face -->
+            <path d="M 150 150 L 150 65 L 240 50 L 240 135 Z"/>
+            <!-- top face -->
+            <path d="M 150 65 L 240 50 L 270 40 L 180 55 Z" opacity="0.75"/>
+            <!-- side face -->
+            <path d="M 240 50 L 270 40 L 270 125 L 240 135 Z" opacity="0.85"/>
+            <!-- canopy band -->
+            <path d="M 150 78 L 240 63 L 270 53" opacity="0.7"/>
+            <path d="M 150 90 L 240 75 L 270 65" opacity="0.4"/>
+            <!-- backwall display panel -->
+            <path d="M 168 125 L 168 95 L 222 88 L 222 118 Z" opacity="0.55"/>
+            <!-- counter -->
+            <path d="M 158 145 L 210 138 L 210 130 L 158 137 Z" opacity="0.6"/>
+            <!-- floor under booth (slight platform) -->
+            <path d="M 150 150 L 240 135 L 270 125 L 270 130 L 240 140 L 150 155 Z" opacity="0.45"/>
+            <!-- header label -->
+            <text x="158" y="80" font-family="Geist Mono, monospace" font-size="6.5" fill="#ffb070" letter-spacing="0.6" opacity="0.95">BRAND EXPERIENCE</text>
+          </g>
+
+          <!-- Booth lights (stage spots) — BRAND EXPERIENCE -->
+          <g filter="url(#tsm-glow-strong)">
+            <circle class="booth-light d0" cx="178" cy="68" r="2.6" fill="#ffd2a0"/>
+            <circle class="booth-light d2" cx="208" cy="63" r="2.6" fill="#ff8a5a"/>
+            <circle class="booth-light d4" cx="234" cy="58" r="2.6" fill="#ff5078"/>
+          </g>
+
+          <!-- ===== Booth: BACK-RIGHT ===== -->
+          <g stroke="url(#tsm-grad)" stroke-width="1" fill="none" filter="url(#tsm-glow)" opacity="0.95">
+            <path d="M 305 110 L 305 60 L 360 50 L 360 100 Z"/>
+            <path d="M 305 60 L 360 50 L 385 42 L 330 52 Z" opacity="0.7"/>
+            <path d="M 360 50 L 385 42 L 385 92 L 360 100 Z" opacity="0.85"/>
+            <path d="M 305 73 L 360 63 L 385 55" opacity="0.6"/>
+            <path d="M 318 95 L 318 82 L 348 76 L 348 89 Z" opacity="0.7"/>
+            <text x="312" y="69" font-family="Geist Mono, monospace" font-size="5.5" fill="#ff8a5a" letter-spacing="0.4" opacity="0.95">GLOBAL SUPPLY</text>
+          </g>
+
+          <!-- ===== Booth: FRONT-LEFT (INNOVATECH) ===== -->
+          <g stroke="url(#tsm-grad)" stroke-width="1.1" fill="none" filter="url(#tsm-glow)">
+            <path d="M 35 230 L 35 160 L 105 145 L 105 215 Z"/>
+            <path d="M 35 160 L 105 145 L 130 138 L 60 153 Z" opacity="0.7"/>
+            <path d="M 105 145 L 130 138 L 130 208 L 105 215 Z" opacity="0.85"/>
+            <path d="M 35 175 L 105 160 L 130 152" opacity="0.6"/>
+            <!-- display -->
+            <path d="M 48 205 L 48 180 L 92 173 L 92 198 Z" opacity="0.6"/>
+            <!-- counter -->
+            <path d="M 42 222 L 90 215 L 90 210 L 42 217 Z" opacity="0.55"/>
+            <text x="44" y="172" font-family="Geist Mono, monospace" font-size="6" fill="#ffb070" letter-spacing="0.5" opacity="0.95">INNOVATECH</text>
+          </g>
+
+          <!-- ===== Booth: FRONT-RIGHT (NEXTGEN SOLUTIONS) ===== -->
+          <g stroke="url(#tsm-grad)" stroke-width="1.1" fill="none" filter="url(#tsm-glow)">
+            <path d="M 280 215 L 280 150 L 355 135 L 355 200 Z"/>
+            <path d="M 280 150 L 355 135 L 380 128 L 305 143 Z" opacity="0.7"/>
+            <path d="M 355 135 L 380 128 L 380 193 L 355 200 Z" opacity="0.85"/>
+            <path d="M 280 165 L 355 150 L 380 142" opacity="0.6"/>
+            <path d="M 294 192 L 294 168 L 342 161 L 342 185 Z" opacity="0.6"/>
+            <path d="M 287 208 L 340 200 L 340 195 L 287 203 Z" opacity="0.55"/>
+            <text x="288" y="160" font-family="Geist Mono, monospace" font-size="6" fill="#ffb070" letter-spacing="0.5" opacity="0.95">NEXTGEN</text>
+            <text x="288" y="167" font-family="Geist Mono, monospace" font-size="6" fill="#ffb070" letter-spacing="0.5" opacity="0.95">SOLUTIONS</text>
+          </g>
+
+          <!-- People (silhouettes) — head + body, with glow dot at feet -->
+          <g stroke="url(#tsm-grad)" stroke-width="0.9" fill="none" filter="url(#tsm-glow)" opacity="0.9">
+            <!-- person 1 (mid-left walking) -->
+            <g transform="translate(135 170)">
+              <circle cx="0" cy="-14" r="2.6"/>
+              <path d="M 0 -11 L 0 -2 M -3 -8 L 3 -8 M -2.5 6 L 0 -2 L 2.5 6"/>
+            </g>
+            <!-- person 2 (between back booths) -->
+            <g transform="translate(195 130)">
+              <circle cx="0" cy="-12" r="2.4"/>
+              <path d="M 0 -10 L 0 -2 M -2.6 -7 L 2.6 -7 M -2 5 L 0 -2 L 2 5"/>
+            </g>
+            <!-- person 3 -->
+            <g transform="translate(245 158)">
+              <circle cx="0" cy="-13" r="2.5"/>
+              <path d="M 0 -10.5 L 0 -2 M -2.8 -7.5 L 2.8 -7.5 M -2.2 5 L 0 -2 L 2.2 5"/>
+            </g>
+            <!-- person 4 (front center, larger) -->
+            <g transform="translate(175 235)">
+              <circle cx="0" cy="-16" r="3"/>
+              <path d="M 0 -13 L 0 0 M -3.5 -10 L 3.5 -10 M -3 8 L 0 0 L 3 8"/>
+            </g>
+            <!-- person 5 -->
+            <g transform="translate(220 245)">
+              <circle cx="0" cy="-17" r="3.2"/>
+              <path d="M 0 -14 L 0 0 M -3.6 -10 L 3.6 -10 M -3 9 L 0 0 L 3 9"/>
+            </g>
+            <!-- person 6 (right side) -->
+            <g transform="translate(265 210)">
+              <circle cx="0" cy="-15" r="2.8"/>
+              <path d="M 0 -12 L 0 0 M -3.2 -9 L 3.2 -9 M -2.6 7 L 0 0 L 2.6 7"/>
+            </g>
+            <!-- person 7 (deeper) -->
+            <g transform="translate(285 140)">
+              <circle cx="0" cy="-11" r="2.2"/>
+              <path d="M 0 -9 L 0 -2 M -2.4 -6.5 L 2.4 -6.5 M -1.8 4 L 0 -2 L 1.8 4"/>
+            </g>
+            <!-- person 8 (front-left foreground) -->
+            <g transform="translate(110 255)">
+              <circle cx="0" cy="-18" r="3.4"/>
+              <path d="M 0 -15 L 0 1 M -4 -11 L 4 -11 M -3.4 10 L 0 1 L 3.4 10"/>
+            </g>
+          </g>
+
+          <!-- Floor glow dots at feet -->
+          <g filter="url(#tsm-glow-strong)">
+            <circle class="person-dot d0"  cx="135" cy="170" r="3" fill="url(#tsm-dot)"/>
+            <circle class="person-dot d2"  cx="195" cy="130" r="2.6" fill="url(#tsm-dot)"/>
+            <circle class="person-dot d4"  cx="245" cy="158" r="2.8" fill="url(#tsm-dot)"/>
+            <circle class="person-dot d1"  cx="175" cy="235" r="3.6" fill="url(#tsm-dot)"/>
+            <circle class="person-dot d3"  cx="220" cy="245" r="3.8" fill="url(#tsm-dot)"/>
+            <circle class="person-dot d5"  cx="265" cy="210" r="3.2" fill="url(#tsm-dot)"/>
+            <circle class="person-dot d6"  cx="285" cy="140" r="2.4" fill="url(#tsm-dot)"/>
+            <circle class="person-dot d7"  cx="110" cy="255" r="4" fill="url(#tsm-dot)"/>
+          </g>
+
+          <!-- ambient stray light particles -->
+          <g fill="#ff8a5a" filter="url(#tsm-glow-strong)" opacity="0.85">
+            <circle class="booth-light d3" cx="92"  cy="110" r="1.4"/>
+            <circle class="booth-light d6" cx="160" cy="200" r="1.4"/>
+            <circle class="booth-light d9" cx="335" cy="95" r="1.4"/>
+            <circle class="booth-light d4" cx="380" cy="180" r="1.4"/>
+          </g>
+        </svg>
+        <span class="v-num" style="display:none">01</span>
+      </div>
+      <div class="body">
+        <div class="meta">
+          <span class="num">01</span>
+          <span class="tag">National event staffing · Programmatic SEO</span>
+        </div>
+        <h3>TSM Agency</h3>
+        <p>National Trade Show &amp; Event Staffing Company</p>
+        <span class="link">Web Design · Dev · SEO · GEO <span class="arr">→</span></span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CARD 2 — Light TN (House with bulbs)
+         ============================================================ -->
+    <div class="work-card" data-accent="orange">
+      <div class="visual">
+        <img class="ref" src="assets/case-house.png" alt="" />
+        <div class="shimmer"></div>
+        <svg class="overlay" viewBox="0 0 1364 1006" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="house-orb">
+              <stop offset="0%" stop-color="#fff0c8" stop-opacity="1"/>
+              <stop offset="35%" stop-color="#ffb370" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#ff6b1a" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Roof peak bulbs (largest) -->
+          <g class="glow-group">
+            <circle class="glow d0" cx="670" cy="258" r="34" fill="url(#house-orb)"/>
+            <circle class="glow d3" cx="890" cy="235" r="36" fill="url(#house-orb)"/>
+            <circle class="glow d6" cx="1180" cy="360" r="32" fill="url(#house-orb)"/>
+            <!-- ping rings on peaks -->
+            <circle class="ping d0" cx="670" cy="258" r="28" stroke="#ffb370"/>
+            <circle class="ping d4" cx="890" cy="235" r="30" stroke="#fff0c8"/>
+          </g>
+          <!-- Roofline bulbs -->
+          <g class="glow-group">
+            <circle class="glow d1" cx="540" cy="345" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d4" cx="610" cy="305" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d2" cx="760" cy="285" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d5" cx="830" cy="315" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d7" cx="950" cy="325" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d3" cx="1050" cy="395" r="22" fill="url(#house-orb)"/>
+            <circle class="glow d6" cx="1110" cy="425" r="22" fill="url(#house-orb)"/>
+            <circle class="glow d8" cx="1230" cy="385" r="22" fill="url(#house-orb)"/>
+          </g>
+          <!-- Porch / eaves -->
+          <g class="glow-group">
+            <circle class="glow d2" cx="540" cy="500" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d4" cx="645" cy="495" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d6" cx="790" cy="495" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d8" cx="905" cy="485" r="22" fill="url(#house-orb)"/>
+            <circle class="glow d3" cx="668" cy="675" r="22" fill="url(#house-orb)"/>
+          </g>
+          <!-- Tree bulbs (left tree) -->
+          <g class="glow-group">
+            <circle class="glow d1" cx="385" cy="385" r="18" fill="url(#house-orb)"/>
+            <circle class="glow d5" cx="345" cy="460" r="18" fill="url(#house-orb)"/>
+            <circle class="glow d3" cx="380" cy="515" r="18" fill="url(#house-orb)"/>
+            <circle class="glow d7" cx="395" cy="610" r="18" fill="url(#house-orb)"/>
+          </g>
+          <!-- Tree bulbs (right tree) -->
+          <g class="glow-group">
+            <circle class="glow d2" cx="1215" cy="500" r="18" fill="url(#house-orb)"/>
+            <circle class="glow d6" cx="1250" cy="525" r="18" fill="url(#house-orb)"/>
+          </g>
+          <!-- Pathway lights -->
+          <g class="glow-group">
+            <circle class="glow d0" cx="720" cy="720" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d3" cx="670" cy="785" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d5" cx="605" cy="825" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d8" cx="445" cy="880" r="28" fill="url(#house-orb)"/>
+            <circle class="glow d2" cx="1050" cy="740" r="24" fill="url(#house-orb)"/>
+            <circle class="glow d6" cx="1095" cy="815" r="26" fill="url(#house-orb)"/>
+          </g>
+          <!-- Left structure / mailbox post -->
+          <g class="glow-group">
+            <circle class="glow d4" cx="125" cy="590" r="24" fill="url(#house-orb)"/>
+          </g>
+        </svg>
+        <svg class="scene v-house" viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="display:none">
+          <defs>
+            <linearGradient id="house-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#ffb370"/>
+              <stop offset="100%" stop-color="#ff6b1a"/>
+            </linearGradient>
+            <radialGradient id="house-bulb">
+              <stop offset="0%"  stop-color="#fff4d0"/>
+              <stop offset="35%" stop-color="#ffb370"/>
+              <stop offset="100%" stop-color="#ff6b1a" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="house-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="house-glow-strong" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="3.2" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- subtle dot grid -->
+          <g fill="rgba(255, 170, 100, 0.18)">
+            <g>
+              <circle cx="40"  cy="40"  r="0.7"/><circle cx="80"  cy="40"  r="0.7"/>
+              <circle cx="120" cy="40"  r="0.7"/><circle cx="160" cy="40"  r="0.7"/>
+              <circle cx="200" cy="40"  r="0.7"/><circle cx="240" cy="40"  r="0.7"/>
+              <circle cx="280" cy="40"  r="0.7"/><circle cx="320" cy="40"  r="0.7"/>
+              <circle cx="360" cy="40"  r="0.7"/>
+              <circle cx="40"  cy="80"  r="0.7"/><circle cx="80"  cy="80"  r="0.7"/>
+              <circle cx="120" cy="80"  r="0.7"/><circle cx="160" cy="80"  r="0.7"/>
+              <circle cx="200" cy="80"  r="0.7"/><circle cx="240" cy="80"  r="0.7"/>
+              <circle cx="280" cy="80"  r="0.7"/><circle cx="320" cy="80"  r="0.7"/>
+              <circle cx="360" cy="80"  r="0.7"/>
+              <circle cx="40"  cy="120" r="0.7"/><circle cx="120" cy="120" r="0.7"/>
+              <circle cx="280" cy="120" r="0.7"/><circle cx="360" cy="120" r="0.7"/>
+            </g>
+          </g>
+
+          <!-- horizon ground line -->
+          <path d="M 0 235 L 400 235" stroke="rgba(255,170,100,0.18)" stroke-width="0.6" fill="none"/>
+
+          <!-- ===== Trees (left and right, sketchy) ===== -->
+          <g stroke="url(#house-grad)" stroke-width="0.9" fill="none" filter="url(#house-glow)" opacity="0.85">
+            <!-- left tree -->
+            <path d="M 88 235 L 88 130
+                     M 88 175 L 70 150 M 88 175 L 105 155
+                     M 88 155 L 75 130 M 88 155 L 100 135
+                     M 88 195 L 72 175 M 88 195 L 104 178
+                     M 70 150 L 62 138 M 70 150 L 65 142
+                     M 105 155 L 112 142 M 105 155 L 110 148
+                     M 75 130 L 70 122 M 100 135 L 106 128"/>
+            <!-- right tree (smaller) -->
+            <path d="M 348 235 L 348 168
+                     M 348 200 L 335 185 M 348 200 L 360 187
+                     M 348 185 L 338 173 M 348 185 L 358 174
+                     M 348 215 L 336 205 M 348 215 L 360 205"/>
+            <!-- shrubs (small spheres) -->
+            <circle cx="158" cy="225" r="6" opacity="0.55"/>
+            <circle cx="178" cy="227" r="5" opacity="0.5"/>
+            <circle cx="222" cy="225" r="6" opacity="0.55"/>
+            <circle cx="242" cy="227" r="5" opacity="0.5"/>
+            <circle cx="320" cy="225" r="5" opacity="0.5"/>
+            <circle cx="335" cy="227" r="4" opacity="0.45"/>
+          </g>
+
+          <!-- ===== Left small structure (mailbox / fence column) ===== -->
+          <g stroke="url(#house-grad)" stroke-width="0.9" fill="none" filter="url(#house-glow)" opacity="0.7">
+            <path d="M 28 235 L 28 200 L 70 195 L 70 230 Z" class="house-line"/>
+          </g>
+
+          <!-- ===== Main house ===== -->
+          <g stroke="url(#house-grad)" stroke-width="1.1" fill="none" filter="url(#house-glow)">
+            <!-- main body -->
+            <path d="M 130 235 L 130 165 L 270 165 L 270 235" />
+            <!-- main gable roof -->
+            <path d="M 130 165 L 200 105 L 270 165" />
+            <!-- secondary front gable (small porch peak) -->
+            <path d="M 175 165 L 175 135 L 200 115 L 225 135 L 225 165" opacity="0.9"/>
+            <!-- door (arched) -->
+            <path d="M 188 235 L 188 185 Q 200 178 212 185 L 212 235" />
+            <path d="M 188 235 L 212 235" opacity="0.7"/>
+            <!-- door panels -->
+            <path d="M 200 195 L 200 230" opacity="0.45"/>
+            <!-- left window -->
+            <path d="M 140 195 L 140 215 L 165 215 L 165 195 Z" opacity="0.8"/>
+            <path d="M 152.5 195 L 152.5 215 M 140 205 L 165 205" opacity="0.45"/>
+            <!-- right window -->
+            <path d="M 235 195 L 235 215 L 260 215 L 260 195 Z" opacity="0.8"/>
+            <path d="M 247.5 195 L 247.5 215 M 235 205 L 260 205" opacity="0.45"/>
+            <!-- garage (right) -->
+            <path d="M 270 235 L 270 175 L 335 175 L 335 235" />
+            <path d="M 270 175 L 302 150 L 335 175" />
+            <!-- garage door panels -->
+            <path d="M 278 188 L 278 232 M 290 188 L 290 232 M 302 188 L 302 232 M 314 188 L 314 232 M 326 188 L 326 232" opacity="0.3"/>
+            <path d="M 275 195 L 330 195 M 275 210 L 330 210 M 275 225 L 330 225" opacity="0.3"/>
+            <!-- side detail on left -->
+            <path d="M 130 200 L 130 235" opacity="0.45"/>
+          </g>
+
+          <!-- ===== Pathway curving in from bottom-right ===== -->
+          <g stroke="url(#house-grad)" stroke-width="0.9" fill="none" opacity="0.7">
+            <path class="path-line" d="M 200 235 Q 230 250 270 258 T 380 270"/>
+            <path class="path-line" d="M 200 235 Q 175 250 140 258 T 30 268"/>
+          </g>
+
+          <!-- ===== BULBS — along rooflines, doors, path, trees ===== -->
+          <!-- Each bulb = small filament dot + soft glow halo -->
+          <g filter="url(#house-glow-strong)">
+            <!-- Main roof line (left slope) — 6 bulbs -->
+            <circle class="bulb d0" cx="142" cy="155" r="2" fill="#ffd99e"/>
+            <circle class="bulb d1" cx="156" cy="143" r="2.2" fill="#ffb370"/>
+            <circle class="bulb d2" cx="170" cy="131" r="2" fill="#ffd99e"/>
+            <circle class="bulb d3" cx="184" cy="119" r="2.2" fill="#ffb370"/>
+            <!-- Peak -->
+            <circle class="bulb-big d2" cx="200" cy="103" r="3.4" fill="#fff0c0"/>
+            <!-- Main roof (right slope) — 6 bulbs -->
+            <circle class="bulb d4" cx="216" cy="119" r="2.2" fill="#ffb370"/>
+            <circle class="bulb d5" cx="230" cy="131" r="2" fill="#ffd99e"/>
+            <circle class="bulb d6" cx="244" cy="143" r="2.2" fill="#ffb370"/>
+            <circle class="bulb d7" cx="258" cy="155" r="2" fill="#ffd99e"/>
+
+            <!-- Secondary front gable (porch peak) -->
+            <circle class="bulb d3" cx="183" cy="143" r="1.6" fill="#ffb370"/>
+            <circle class="bulb-big d4" cx="200" cy="115" r="2.6" fill="#fff0c0"/>
+            <circle class="bulb d5" cx="217" cy="143" r="1.6" fill="#ffb370"/>
+
+            <!-- Garage roof -->
+            <circle class="bulb d1" cx="280" cy="170" r="1.8" fill="#ffd99e"/>
+            <circle class="bulb d3" cx="291" cy="160" r="1.8" fill="#ffb370"/>
+            <circle class="bulb-big d5" cx="302" cy="148" r="2.8" fill="#fff0c0"/>
+            <circle class="bulb d4" cx="313" cy="160" r="1.8" fill="#ffb370"/>
+            <circle class="bulb d6" cx="324" cy="170" r="1.8" fill="#ffd99e"/>
+
+            <!-- Eaves between gables (roof bottom edge) -->
+            <circle class="bulb d2" cx="132" cy="167" r="1.6" fill="#ffd99e"/>
+            <circle class="bulb d7" cx="270" cy="167" r="1.6" fill="#ffd99e"/>
+
+            <!-- Door arch -->
+            <circle class="bulb d0" cx="188" cy="186" r="1.4" fill="#ffd99e"/>
+            <circle class="bulb d1" cx="195" cy="181" r="1.4" fill="#ffb370"/>
+            <circle class="bulb d2" cx="205" cy="181" r="1.4" fill="#ffb370"/>
+            <circle class="bulb d3" cx="212" cy="186" r="1.4" fill="#ffd99e"/>
+
+            <!-- Pathway dots (curving) -->
+            <circle class="bulb-big d0" cx="230" cy="244" r="2.2" fill="#fff0c0"/>
+            <circle class="bulb-big d2" cx="258" cy="252" r="2.4" fill="#ffb370"/>
+            <circle class="bulb-big d4" cx="295" cy="260" r="2.2" fill="#fff0c0"/>
+            <circle class="bulb-big d6" cx="335" cy="266" r="2.4" fill="#ffb370"/>
+            <circle class="bulb-big d8" cx="372" cy="270" r="2.2" fill="#fff0c0"/>
+            <circle class="bulb-big d1" cx="172" cy="245" r="2.4" fill="#ffb370"/>
+            <circle class="bulb-big d3" cx="138" cy="254" r="2.2" fill="#fff0c0"/>
+            <circle class="bulb-big d5" cx="98"  cy="262" r="2.4" fill="#ffb370"/>
+            <circle class="bulb-big d7" cx="58"  cy="268" r="2.2" fill="#fff0c0"/>
+
+            <!-- Tree lights (left tree) -->
+            <circle class="bulb d2" cx="62"  cy="138" r="1.4" fill="#ffd99e"/>
+            <circle class="bulb d4" cx="70"  cy="122" r="1.4" fill="#ffb370"/>
+            <circle class="bulb d6" cx="106" cy="128" r="1.4" fill="#ffd99e"/>
+            <circle class="bulb d1" cx="112" cy="142" r="1.4" fill="#ffb370"/>
+            <circle class="bulb d8" cx="88"  cy="118" r="1.6" fill="#fff0c0"/>
+            <circle class="bulb d3" cx="75"  cy="155" r="1.2" fill="#ffd99e"/>
+            <circle class="bulb d5" cx="102" cy="160" r="1.2" fill="#ffb370"/>
+
+            <!-- Tree lights (right tree) -->
+            <circle class="bulb d1" cx="335" cy="185" r="1.2" fill="#ffd99e"/>
+            <circle class="bulb d3" cx="358" cy="174" r="1.2" fill="#ffb370"/>
+            <circle class="bulb d5" cx="348" cy="170" r="1.4" fill="#fff0c0"/>
+            <circle class="bulb d7" cx="360" cy="205" r="1.2" fill="#ffd99e"/>
+
+            <!-- Left mailbox dot -->
+            <circle class="bulb d4" cx="49"  cy="195" r="1.4" fill="#ffd99e"/>
+          </g>
+        </svg>
+        <span class="v-num" style="display:none">02</span>
+      </div>
+      <div class="body">
+        <div class="meta">
+          <span class="num">02</span>
+          <span class="tag">Nashville outdoor lighting · Local SEO</span>
+        </div>
+        <h3>Light TN</h3>
+        <p>Nashville Outdoor Lighting Design &amp; Installation</p>
+        <span class="link">Web Design · Dev · SEO · GEO <span class="arr">→</span></span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CARD 3 — Custom Phenolic Labels (Electrical panel)
+         ============================================================ -->
+    <div class="work-card" data-accent="magenta">
+      <div class="visual">
+        <img class="ref" src="assets/case-panel.png" alt="" />
+        <div class="shimmer"></div>
+        <svg class="overlay" viewBox="0 0 848 894" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="panel-orb">
+              <stop offset="0%" stop-color="#f8d0ff" stop-opacity="1"/>
+              <stop offset="40%" stop-color="#c878ff" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#a13df0" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Central label plate breathing glow — subtle accent only -->
+          <g class="glow-group">
+            <ellipse class="plate-pulse" cx="425" cy="435" rx="200" ry="65" fill="url(#panel-orb)" opacity="0.22"/>
+          </g>
+          <!-- Side screws on main plate -->
+          <g class="glow-group">
+            <circle class="glow d0" cx="176" cy="443" r="30" fill="url(#panel-orb)"/>
+            <circle class="glow d3" cx="678" cy="443" r="30" fill="url(#panel-orb)"/>
+            <!-- ping rings on main screws -->
+            <circle class="ping d0" cx="176" cy="443" r="22" stroke="#f0c8ff"/>
+            <circle class="ping d3" cx="678" cy="443" r="22" stroke="#f0c8ff"/>
+          </g>
+          <!-- Top terminal screws (5 sets in a row) -->
+          <g class="glow-group">
+            <circle class="glow d1" cx="272" cy="248" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d4" cx="272" cy="285" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d2" cx="370" cy="248" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d5" cx="370" cy="285" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d3" cx="480" cy="248" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d6" cx="480" cy="285" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d4" cx="560" cy="248" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d7" cx="560" cy="285" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d5" cx="625" cy="248" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d8" cx="625" cy="285" r="18" fill="url(#panel-orb)"/>
+          </g>
+          <!-- Corner mounting screws -->
+          <g class="glow-group">
+            <circle class="glow d2" cx="176" cy="333" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d5" cx="678" cy="333" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d3" cx="176" cy="572" r="18" fill="url(#panel-orb)"/>
+            <circle class="glow d6" cx="678" cy="572" r="18" fill="url(#panel-orb)"/>
+          </g>
+          <!-- Bottom terminal screws -->
+          <g class="glow-group">
+            <circle class="glow d4" cx="282" cy="650" r="14" fill="url(#panel-orb)"/>
+            <circle class="glow d7" cx="340" cy="650" r="14" fill="url(#panel-orb)"/>
+            <circle class="glow d2" cx="398" cy="650" r="14" fill="url(#panel-orb)"/>
+            <circle class="glow d5" cx="500" cy="650" r="14" fill="url(#panel-orb)"/>
+            <circle class="glow d8" cx="568" cy="650" r="14" fill="url(#panel-orb)"/>
+          </g>
+          <!-- Circuit trace fireflies (corners + edges) -->
+          <g class="glow-group">
+            <circle class="firefly d0" cx="95"  cy="445" r="5" fill="#f0c8ff"/>
+            <circle class="firefly d3" cx="758" cy="395" r="5" fill="#f0c8ff"/>
+            <circle class="firefly d6" cx="790" cy="655" r="5" fill="#f0c8ff"/>
+            <circle class="firefly d2" cx="60"  cy="640" r="5" fill="#f0c8ff"/>
+            <circle class="firefly d4" cx="275" cy="855" r="5" fill="#f0c8ff"/>
+            <circle class="firefly d7" cx="610" cy="865" r="5" fill="#f0c8ff"/>
+            <circle class="firefly d1" cx="100" cy="160" r="5" fill="#f0c8ff"/>
+            <circle class="firefly d5" cx="720" cy="110" r="5" fill="#f0c8ff"/>
+          </g>
+        </svg>
+        <svg class="scene v-panel" viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="display:none">
+          <defs>
+            <linearGradient id="panel-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#d68aff"/>
+              <stop offset="100%" stop-color="#a13df0"/>
+            </linearGradient>
+            <linearGradient id="panel-grad-dim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#d68aff" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#a13df0" stop-opacity="0.55"/>
+            </linearGradient>
+            <radialGradient id="panel-glow-rad">
+              <stop offset="0%"  stop-color="#f0c8ff"/>
+              <stop offset="40%" stop-color="#c878ff" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#a13df0" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="panel-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="panel-glow-strong" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="3.2" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+
+            <!-- Reusable screw symbol (circle + cross) -->
+            <symbol id="screw" viewBox="-6 -6 12 12">
+              <circle cx="0" cy="0" r="4.5" fill="none" stroke="url(#panel-grad)" stroke-width="0.8"/>
+              <path d="M -2.6 -2.6 L 2.6 2.6 M -2.6 2.6 L 2.6 -2.6" stroke="url(#panel-grad)" stroke-width="0.8"/>
+              <circle cx="0" cy="0" r="1.4" fill="#d68aff" opacity="0.7"/>
+            </symbol>
+
+            <!-- Reusable terminal (rect with screws) -->
+            <symbol id="terminal" viewBox="0 0 24 18">
+              <rect x="0" y="0" width="24" height="18" fill="none" stroke="url(#panel-grad)" stroke-width="0.7"/>
+              <rect x="2" y="2" width="20" height="14" fill="none" stroke="url(#panel-grad-dim)" stroke-width="0.5"/>
+              <use href="#screw" x="6" y="9" width="6" height="6"/>
+              <use href="#screw" x="18" y="9" width="6" height="6"/>
+            </symbol>
+          </defs>
+
+          <!-- circuit-trace background -->
+          <g stroke="url(#panel-grad-dim)" stroke-width="0.4" fill="none" opacity="0.45">
+            <path d="M 0 60 L 60 60 L 60 30 L 130 30"/>
+            <path d="M 400 70 L 350 70 L 350 40 L 280 40"/>
+            <path d="M 0 220 L 70 220 L 70 250 L 160 250"/>
+            <path d="M 400 240 L 340 240 L 340 210 L 260 210"/>
+            <path d="M 30 30 L 30 90 L 0 90"/>
+            <path d="M 380 100 L 400 100"/>
+            <path d="M 20 180 L 20 250 L 50 250"/>
+            <path d="M 380 170 L 400 170 M 380 200 L 400 200"/>
+          </g>
+          <!-- circuit trace dots/junctions -->
+          <g fill="#c878ff" opacity="0.45">
+            <circle cx="60"  cy="30"  r="0.9"/>
+            <circle cx="130" cy="30"  r="0.9"/>
+            <circle cx="350" cy="40"  r="0.9"/>
+            <circle cx="280" cy="40"  r="0.9"/>
+            <circle cx="70"  cy="250" r="0.9"/>
+            <circle cx="340" cy="210" r="0.9"/>
+            <circle cx="30"  cy="90"  r="0.9"/>
+          </g>
+
+          <!-- Top conduits feeding terminal blocks -->
+          <g stroke="url(#panel-grad)" stroke-width="1" fill="none" filter="url(#panel-glow)" opacity="0.85">
+            <path class="conduit" d="M 100 0 Q 100 40 110 50 L 110 78"/>
+            <path class="conduit" d="M 150 0 Q 150 35 160 50 L 160 78"/>
+            <path class="conduit" d="M 200 0 Q 200 35 200 50 L 200 78"/>
+            <path class="conduit" d="M 250 0 Q 250 35 240 50 L 240 78"/>
+            <path class="conduit" d="M 300 0 Q 300 40 290 50 L 290 78"/>
+          </g>
+
+          <!-- Top terminal blocks -->
+          <g filter="url(#panel-glow)">
+            <use class="terminal d0" href="#terminal" x="98"  y="78" width="24" height="18"/>
+            <use class="terminal d1" href="#terminal" x="148" y="78" width="24" height="18"/>
+            <use class="terminal d2" href="#terminal" x="188" y="78" width="24" height="18"/>
+            <use class="terminal d3" href="#terminal" x="228" y="78" width="24" height="18"/>
+            <use class="terminal d4" href="#terminal" x="278" y="78" width="24" height="18"/>
+          </g>
+
+          <!-- ===== Main panel body ===== -->
+          <g stroke="url(#panel-grad)" stroke-width="1.2" fill="none" filter="url(#panel-glow)">
+            <!-- outer panel rect (rounded) -->
+            <rect x="80" y="110" rx="6" ry="6" width="240" height="85" />
+            <!-- inner bezel -->
+            <rect x="86" y="116" rx="4" ry="4" width="228" height="73" stroke-width="0.7" opacity="0.55"/>
+          </g>
+
+          <!-- Inner label plate -->
+          <g class="label-plate" filter="url(#panel-glow-strong)">
+            <rect x="120" y="128" rx="3" ry="3" width="160" height="50" fill="none" stroke="url(#panel-grad)" stroke-width="1.3"/>
+            <rect x="124" y="132" rx="2" ry="2" width="152" height="42" fill="rgba(168, 80, 240, 0.06)" stroke="url(#panel-grad-dim)" stroke-width="0.5"/>
+            <!-- Engraved label text -->
+            <text x="200" y="153" text-anchor="middle"
+                  font-family="Geist Mono, monospace" font-weight="500" font-size="14"
+                  fill="#f0c8ff" letter-spacing="3" opacity="0.95">PANEL 2A</text>
+            <text x="200" y="169" text-anchor="middle"
+                  font-family="Geist Mono, monospace" font-size="8"
+                  fill="#c878ff" letter-spacing="2.2" opacity="0.85">480V · 3PH · 60HZ</text>
+          </g>
+
+          <!-- Panel corner screws -->
+          <g filter="url(#panel-glow)">
+            <use class="screw d0" href="#screw" x="84" y="120" width="12" height="12"/>
+            <use class="screw d1" href="#screw" x="304" y="120" width="12" height="12"/>
+            <use class="screw d2" href="#screw" x="84" y="173" width="12" height="12"/>
+            <use class="screw d3" href="#screw" x="304" y="173" width="12" height="12"/>
+            <!-- mid mounting screws on label plate -->
+            <use class="screw d4" href="#screw" x="100" y="146" width="11" height="11"/>
+            <use class="screw d5" href="#screw" x="289" y="146" width="11" height="11"/>
+          </g>
+
+          <!-- Bottom terminal blocks (wider, paired) -->
+          <g filter="url(#panel-glow)">
+            <!-- big block left -->
+            <g stroke="url(#panel-grad)" stroke-width="0.8" fill="none">
+              <rect x="110" y="210" width="70" height="22"/>
+              <rect x="113" y="213" width="64" height="16" stroke="url(#panel-grad-dim)" stroke-width="0.5"/>
+            </g>
+            <use class="screw d2" href="#screw" x="118" y="218" width="8" height="8"/>
+            <use class="screw d3" href="#screw" x="138" y="218" width="8" height="8"/>
+            <use class="screw d4" href="#screw" x="160" y="218" width="8" height="8"/>
+
+            <!-- big block right -->
+            <g stroke="url(#panel-grad)" stroke-width="0.8" fill="none">
+              <rect x="210" y="210" width="80" height="22"/>
+              <rect x="213" y="213" width="74" height="16" stroke="url(#panel-grad-dim)" stroke-width="0.5"/>
+            </g>
+            <use class="screw d5" href="#screw" x="220" y="218" width="8" height="8"/>
+            <use class="screw d6" href="#screw" x="245" y="218" width="8" height="8"/>
+            <use class="screw d7" href="#screw" x="272" y="218" width="8" height="8"/>
+          </g>
+
+          <!-- Bottom conduits exiting -->
+          <g stroke="url(#panel-grad)" stroke-width="1" fill="none" filter="url(#panel-glow)" opacity="0.85">
+            <path class="conduit" d="M 130 232 Q 130 260 100 270 L 60 280"/>
+            <path class="conduit" d="M 160 232 Q 160 255 180 275 L 200 280"/>
+            <path class="conduit" d="M 250 232 Q 250 265 280 275 L 310 280"/>
+            <path class="conduit" d="M 270 232 Q 270 260 330 270 L 360 280"/>
+          </g>
+
+          <!-- Side conduit (right) -->
+          <g stroke="url(#panel-grad)" stroke-width="0.9" fill="none" filter="url(#panel-glow)" opacity="0.8">
+            <path class="conduit" d="M 320 152 L 360 152 L 360 90 L 400 90"/>
+            <path class="conduit" d="M 80 152 L 40 152 L 40 220 L 0 220"/>
+          </g>
+
+          <!-- Glowing connection node dots -->
+          <g filter="url(#panel-glow-strong)">
+            <circle class="terminal d0" cx="110" cy="78"  r="1.6" fill="#f0c8ff"/>
+            <circle class="terminal d2" cx="160" cy="78"  r="1.6" fill="#f0c8ff"/>
+            <circle class="terminal d4" cx="200" cy="78"  r="1.6" fill="#f0c8ff"/>
+            <circle class="terminal d1" cx="240" cy="78"  r="1.6" fill="#f0c8ff"/>
+            <circle class="terminal d3" cx="290" cy="78"  r="1.6" fill="#f0c8ff"/>
+            <!-- side dot accent -->
+            <circle class="terminal d5" cx="360" cy="152" r="1.8" fill="#f0c8ff"/>
+            <circle class="terminal d6" cx="40"  cy="152" r="1.8" fill="#f0c8ff"/>
+          </g>
+
+          <!-- Faint scanline shimmer over label -->
+          <g opacity="0.25">
+            <line x1="124" y1="140" x2="276" y2="140" stroke="#f0c8ff" stroke-width="0.3"/>
+            <line x1="124" y1="160" x2="276" y2="160" stroke="#f0c8ff" stroke-width="0.3"/>
+          </g>
+        </svg>
+        <span class="v-num" style="display:none">03</span>
+      </div>
+      <div class="body">
+        <div class="meta">
+          <span class="num">03</span>
+          <span class="tag">National precision engraving · Industrial</span>
+        </div>
+        <h3>Custom Phenolic Labels</h3>
+        <p>National Precision Engraving for Electrical &amp; Industrial Projects</p>
+        <span class="link">Web Design · Dev · SEO · GEO <span class="arr">→</span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="sub" style="margin-top: 64px;">All three scenes share the wireframe-glow vocabulary, mono caption type, dot-grid backdrop, and animated bulb/terminal pulses. Tell me which to push further and I'll iterate on this preview before patching the main page.</p>
+</div>
+</body>
+</html>
